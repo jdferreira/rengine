@@ -3,6 +3,8 @@ extern crate glium;
 
 mod world;
 mod window;
+mod renderable;
+mod vertex;
 
 fn main() {
     let mut window = window::Window::new();

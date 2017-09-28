@@ -1,17 +1,13 @@
-use glium::{Display, Surface, Program};
-use glium::uniforms::EmptyUniforms;
-
-use glium::glutin::{EventsLoop, WindowBuilder, ContextBuilder};
-use glium::glutin::{Event, WindowEvent};
+use super::glium::{Display, Surface};
+use super::glium::glutin::{EventsLoop, WindowBuilder, ContextBuilder};
+use super::glium::glutin::{Event, WindowEvent};
 
 use world;
 
 pub struct Window {
     pub display: Display,
     pub closed: bool,
-
     events_loop: EventsLoop,
-    program: Program,
 }
 
 impl Window {
@@ -21,15 +17,10 @@ impl Window {
         let context = ContextBuilder::new();
         let display = Display::new(window, context, &events_loop).unwrap();
 
-        let vertex_shader_src = include_str!("../assets/tri.glslv");
-        let fragment_shader_src = include_str!("../assets/tri.glslf");
-        let program = Program::from_source(&display, vertex_shader_src, fragment_shader_src, None).unwrap();
-
         Window {
             display: display,
             closed: false,
             events_loop: events_loop,
-            program: program,
         }
     }
 
@@ -37,7 +28,7 @@ impl Window {
         let mut target = self.display.draw();
 
         target.clear_color(0.0, 0.0, 1.0, 0.0);
-        target.draw(&world.vertex_buffer, &world.index_buffer, &self.program, &EmptyUniforms, &Default::default()).unwrap();
+        world.draw(&mut target);
         target.finish().unwrap();
     }
 
@@ -49,7 +40,7 @@ impl Window {
                 closed = true;
             }
         });
-        
+
         self.closed = closed;
     }
 }
